@@ -1,0 +1,20 @@
+# Meta-reconciler manifest for myrgic/sites.
+#
+# Consumed by `pkg/reconcile.RunMeta` in the cogos kernel. Each entry maps
+# to a Reconcilable provider registered in the kernel; RunMeta resolves
+# dependency order via Kahn's topological sort + wave-based ordering, then
+# runs each provider's plan/apply lifecycle.
+#
+# For v0.0.1 this declares one resource (the site provider). Future
+# providers (identity, channel, etc.) compose alongside.
+apiVersion: cog.os/v1
+kind: ReconcileManifest
+
+resources:
+  - name: site
+    interval: manual          # explicit invocation only; no continuous loop yet
+    auto_apply: false         # require --apply on the CLI to commit changes
+    prune: false              # leave orphaned deploy targets alone (manual cleanup)
+    wave: 0                   # no other resources depend on or block this
+    suspended: false
+    # depends_on: []          # no inter-provider dependencies for v0.0.1

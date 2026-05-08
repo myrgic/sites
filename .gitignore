@@ -2,4 +2,9 @@
 node_modules/
 dist/
 *.log
-.cog/config/sites/.state.json
+# Kernel runtime data — only config/manifest.yaml + config/site/README.md are tracked.
+.cog/config/site/.state.json
+.cog/blobs/
+.cog/ledger/
+.cog/run/
+.cog/.state/
