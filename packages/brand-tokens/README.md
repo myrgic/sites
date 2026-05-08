@@ -4,7 +4,7 @@ Myrgic design system tokens: CSS custom properties for color, typography, spacin
 
 ## Source of truth
 
-`~/repos/open-design/design-systems/myrgic/colors_and_type.css`
+Source: Myrgic Design System (internal).
 
 Do not edit `colors_and_type.css` in this package directly. All changes must be made at the source and re-synced here.
 

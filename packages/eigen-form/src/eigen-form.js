@@ -3,7 +3,7 @@
    File: src/eigen-form.js (formerly trefoil-mark.js in canonical Myrgic DS).
    Function: createTrefoilMark — produces a (p,q) torus-knot canvas
    animation. Future versions add other eigenform families.
-   Vision: cog://mem/semantic/insights/eigen-form-as-mathematical-design-library
+   Vision: mathematical design primitives — every visual element a rigorously defined mathematical object.
    ===================================================================== */
 //
 // The mark is what the substrate remembers of a constant-velocity

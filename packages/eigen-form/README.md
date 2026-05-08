@@ -20,7 +20,7 @@ controller.setParam('halfLife', 3.5);
 
 ## Vision
 
-eigen-form is the first library in a planned family of mathematical design primitives. The full vision: a library where every visual element is a rigorously defined mathematical object, parameterized at the level of its governing equations, renderable at arbitrary resolution without rasterization artifacts. See the vision cogdoc: `cog://mem/semantic/insights/eigen-form-as-mathematical-design-library`
+eigen-form is the first library in a planned family of mathematical design primitives. The full vision: a library where every visual element is a rigorously defined mathematical object, parameterized at the level of its governing equations, renderable at arbitrary resolution without rasterization artifacts.
 
 ## Documentation
 
