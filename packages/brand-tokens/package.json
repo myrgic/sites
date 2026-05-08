@@ -1,0 +1,7 @@
+{
+  "name": "@myrgic/brand-tokens",
+  "version": "0.0.1",
+  "description": "Myrgic design system tokens (CSS custom properties).",
+  "files": ["colors_and_type.css"],
+  "license": "MIT"
+}
