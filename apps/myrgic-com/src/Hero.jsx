@@ -1,7 +1,6 @@
 // Hero — full-viewport mark playing the emergence, wordmark below, tagline below.
-// v0.0.1 of myrgic.com — cropped from the canonical brand-site (Myrgic Design System
-// OD project, ui_kits/brand-site/Hero.jsx). Scroll prompt removed since this page
-// has no further sections yet. Iterate after domain-loop closure.
+// v0.0.1 of myrgic.com — adapted from canonical brand-site. Scroll prompt removed
+// since this page has no further sections yet. Iterate after domain-loop closure.
 function MyHero() {
   return (
     <section style={heroStyles.hero}>
