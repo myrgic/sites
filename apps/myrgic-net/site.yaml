@@ -1,0 +1,19 @@
+apiVersion: cog.os/v1
+kind: Site
+metadata:
+  name: myrgic-net
+spec:
+  domain: myrgic.net
+  canonical: false
+  source:
+    path: src/
+  build:
+    command: ./build.sh
+    dist: dist/
+  https:
+    required: true
+  deploy:
+    strategy: gh-pages
+    target:
+      repo: myrgic/myrgic.net
+  redirect_to: https://myrgic.com/
