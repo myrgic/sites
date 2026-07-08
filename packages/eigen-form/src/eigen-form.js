@@ -57,7 +57,6 @@
 //   'constellation'  magenta band     310..340°
 //   'duotone'    violet → cyan        custom two-tone
 //   'mono'       accent → white       luminance only
-//   'madder'     warm monochrome ink/madder band  4..36°, low sat
 //   {hueStart, hueEnd, sat?, light?}  custom span (degrees)
 // =================================================================
 (function () {
@@ -70,11 +69,7 @@
     research:      { hueStart:  28, hueEnd:  58, sat: 72, light: 62 },
     constellation: { hueStart: 305, hueEnd: 340, sat: 68, light: 62 },
     duotone:       { hueStart: 260, hueEnd: 190, sat: 70, light: 60 },
-    mono:          { hueStart: 260, hueEnd: 260, sat: 60, light: 60, lightEnd: 95 },
-    // Warm monochrome ink/madder band — matches a page whose accent is a
-    // single madder red (e.g. #C4483E ≈ hsl(4.5°,51%,51%)) rather than a
-    // full-saturation rainbow. Low sat keeps it quiet against ink/paper.
-    madder:        { hueStart:   4, hueEnd:  36, sat: 54, light: 56 }
+    mono:          { hueStart: 260, hueEnd: 260, sat: 60, light: 60, lightEnd: 95 }
   };
 
   function resolveGradient(g) {
