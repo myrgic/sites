@@ -12,7 +12,8 @@ function MyHero() {
         />
       </div>
       <h1 className="wordmark" style={{ fontSize: 'clamp(56px, 11vw, 96px)', margin: '32px 0 0' }}>myrgic</h1>
-      <p className="tagline" style={{ marginTop: 18 }}>thinking through distinction</p>
+      <p style={heroStyles.essence}>Distilling <a className="book-link" href="https://book.myrgic.com">distinction</a>,<br/>from datacenter to desktop</p>
+      <p className="tagline" style={{ marginTop: 16 }}>Local-first AI infrastructure</p>
     </section>
   );
 }
@@ -27,6 +28,16 @@ const heroStyles = {
   markWrap: {
     width: 'min(48vmin, 420px)',
     aspectRatio: 1,
+  },
+  essence: {
+    fontFamily: 'var(--font-display)',
+    fontWeight: 400,
+    color: 'var(--fg-2)',
+    fontSize: 'clamp(19px, 3vw, 27px)',
+    letterSpacing: '-0.01em',
+    lineHeight: 1.35,
+    fontVariationSettings: "'opsz' 40, 'SOFT' 50",
+    margin: '22px 0 0',
   },
 };
 
