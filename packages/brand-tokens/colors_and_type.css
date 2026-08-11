@@ -1,7 +1,7 @@
 /* =====================================================================
    Source: Myrgic Design System (internal).
    Do not edit here. Source-of-truth is the canonical Myrgic design system.
-   Last synced: 2026-05-07 by Wave 2 monorepo orchestrator.
+   Last synced: 2026-08-11 (graphite palette ruling).
    ===================================================================== */
 
 /* =================================================================
@@ -19,26 +19,26 @@
   /* ---- Background / surface scale ----
      Five steps from deepest substrate to elevated surface.
      bg → bg-card → bg-elevated step in equal perceptual increments. */
-  --bg:           #0a0a0f;   /* page substrate — the "void" */
-  --bg-card:      #13131a;   /* default card / panel */
-  --bg-elevated:  #1a1a23;   /* modal / popover / inset */
+  --bg:           #050505;   /* page substrate — the "void" */
+  --bg-card:      #121214;   /* default card / panel */
+  --bg-elevated:  #1a1a1d;   /* modal / popover / inset */
 
   /* ---- Borders ---- */
-  --border:        #2d2d3b;
-  --border-light:  #3a3a4a;
+  --border:        #26262a;
+  --border-light:  #3a3a3f;
 
   /* ---- Text scale (high → low) ---- */
   --fg:    #fafafa;          /* primary text, headings */
-  --fg-2:  #d4d4d8;          /* body */
-  --fg-3:  #a1a1aa;          /* muted / secondary */
-  --fg-4:  #71717a;          /* tertiary / metadata */
+  --fg-2:  #d5d5d6;          /* body */
+  --fg-3:  #a0a0a4;          /* muted / secondary */
+  --fg-4:  #707073;          /* tertiary / metadata */
 
   /* ---- Accent ----
      Single accent for emphasis, links, focus rings, brand markers.
      The mark itself uses the full chromatic spectrum — that range
      is reserved and never appears on static surfaces. */
-  --accent:        #8b5cf6;
-  --accent-soft:   rgba(139, 92, 246, 0.15);
+  --accent:        #b794ff;
+  --accent-soft:   rgba(183, 148, 255, 0.15);
 
   /* ---- Spectrum ----
      v1: reserved for the mark only.
