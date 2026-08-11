@@ -1,5 +1,9 @@
 # eigen-form
 
+> Canonical home moved to [myrgic/eigen-form](https://github.com/myrgic/eigen-form) on 2026-08-10.
+> This copy remains vendored for the site apps; develop and file issues in the canonical repo.
+> Showcase: https://myrgic.com/eigen-form/
+
 A mathematical design library for parameterized eigenform rendering. eigen-form produces scientifically accurate geometric figures from mathematical primitives — the same equations used in topology and physics research, rendered directly to canvas as brand-quality visual artifacts. It is designed to be equally ergonomic for AI agents and human developers: the data-attribute API auto-initializes with no code; the imperative API exposes every parameter for programmatic control.
 
 > **v0.0.1** — torus-knot family only. Broader primitive families v0.2+.
