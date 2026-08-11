@@ -20,8 +20,8 @@
      Five steps from deepest substrate to elevated surface.
      bg → bg-card → bg-elevated step in equal perceptual increments. */
   --bg:           #050505;   /* page substrate — the "void" */
-  --bg-card:      #121214;   /* default card / panel */
-  --bg-elevated:  #1a1a1d;   /* modal / popover / inset */
+  --bg-card:      #0c0c0d;   /* default card / panel */
+  --bg-elevated:  #131315;   /* modal / popover / inset */
 
   /* ---- Borders ---- */
   --border:        #26262a;
