@@ -37,6 +37,11 @@ cp -r "$SRC/src/lesson"  dist/src/
 cp -r "$SRC/src/panel"   dist/src/
 cp -r "$SRC/src/params"  dist/src/
 
+# The curriculum: each lesson's model (the mathematics), content (the
+# prose), and view (the drawing). The lesson pages import these directly,
+# so omitting them ships a site of blank pages.
+cp -r "$SRC/curriculum" dist/
+
 for d in "$SRC"/apps/lesson_*/; do
   [[ -d "$d" ]] || continue
   # Trailing slash on the source makes `cp -r` copy the CONTENTS, which

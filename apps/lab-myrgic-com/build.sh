@@ -24,7 +24,7 @@ fi
 
 # Everything the lab publishes, minus repo scaffolding a browser has no
 # use for.
-for item in src apps hub examples dist docs index.html; do
+for item in src apps hub curriculum examples dist docs index.html; do
   [[ -e "$SRC/$item" ]] && cp -r "$SRC/$item" dist/
 done
 
