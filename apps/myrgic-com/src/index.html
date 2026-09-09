@@ -16,6 +16,21 @@
     transition: color var(--dur-base, 180ms) var(--ease, ease), border-color var(--dur-base, 180ms) var(--ease, ease);
   }
   .book-link:hover { color: var(--accent); border-bottom-color: var(--accent-soft); }
+
+  /* Sections below the hero: static HTML, not React. Renders with no JS
+     so a crawler or JS-less visitor sees real content, not a blank #root. */
+  .sections {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 32px var(--s-9, 96px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-9, 96px);
+  }
+  .sections section h2 { margin-bottom: var(--s-4, 16px); }
+  .sections a { color: var(--fg-2); text-decoration: underline; text-decoration-color: var(--border-light); text-underline-offset: 3px; }
+  .sections a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  .sections .divider { margin: 0; }
 </style>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
@@ -23,7 +38,46 @@
 <script src="./eigen-form.js"></script>
 </head>
 <body>
+<!-- Hero mounts here via React, for the animated mark. Everything below is
+     plain static HTML: it exists whether or not the three CDN scripts above
+     ever load. -->
 <div id="root"></div>
+
+<main class="sections">
+  <section>
+    <h2>What Myrgic is</h2>
+    <p>Modern AI work is churn: sessions end, context windows fill, models get swapped. Myrgic builds on the other invariant, the frame of reference that moves with your work, the same trick motor engineers use to control a spinning machine by computing the frame that turns with it. Stillness is computed, not stored, so your projects and working history hold together no matter which model or session is underneath.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>CogOS</h2>
+    <p>CogOS is a local daemon, written in Go, that gives every AI tool on your machine one shared, persistent workspace instead of a dozen disconnected memories. It keeps that state in a plain directory next to your code and speaks the Model Context Protocol, so Claude Code, Cursor, or your own agent can all read and write the same record. Swap the model, keep the workspace.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>mod3</h2>
+    <p>mod3 is the voice channel: a small server that turns an agent's output into speech and listens back, so it can run as a spoken presence instead of only a chat window. It handles turn-taking on its own, queuing what it says, noticing when you talk over it, and yielding the floor. Point any MCP-speaking tool at it and it has a voice.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>The code is public</h2>
+    <p>cogos, mod3, and the rest of the stack, including the site you're reading, are public repositories under the <a href="https://github.com/myrgic">myrgic GitHub org</a>. Clone them, run them, or read the source before you trust any of the above.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Contact</h2>
+    <p>Open an issue on any repo, or start a discussion in the <a href="https://github.com/myrgic">myrgic GitHub org</a>. That's the fastest way to reach the people building this.</p>
+  </section>
+</main>
+
 <script type="text/babel" src="Hero.jsx"></script>
 <script type="text/babel" src="Page.jsx"></script>
 <script type="text/babel">
