@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# .githooks/pre-push — disclosure gate. Vendored from cog:scripts/disclosure-gate.
+#
+# Scope: the files this push actually introduces (diff vs the remote tip), NOT the
+# whole tree. A gate that flags pre-existing already-public content is permanently
+# red and gets overridden into uselessness. Gate what you are disclosing NOW.
+set -uo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+GATE="$ROOT/.githooks/disclosure-gate/scan.sh"
+SELF="$ROOT/.githooks/disclosure-gate/selftest.sh"
+[ -x "$GATE" ] || { echo "pre-push: disclosure gate missing at $GATE — refusing"; exit 1; }
+if [ -x "$SELF" ]; then
+  "$SELF" >/dev/null 2>&1 || { echo "pre-push: disclosure-gate SELFTEST FAILED — gate untrustworthy, refusing"; "$SELF"; exit 1; }
+fi
+
+Z='0000000000000000000000000000000000000000'
+files=""
+while read -r lref lsha rref rsha; do
+  [ "$lsha" = "$Z" ] && continue                      # branch deletion
+  if [ "$rsha" = "$Z" ]; then                         # new branch: diff vs default base
+    base=$(git merge-base "$lsha" HEAD@{upstream} 2>/dev/null \
+        || git merge-base "$lsha" origin/main 2>/dev/null \
+        || git merge-base "$lsha" main 2>/dev/null || true)
+    if [ -n "$base" ]; then rng="$base..$lsha"; else rng="$lsha"; fi
+  else
+    rng="$rsha..$lsha"
+  fi
+  f=$(git diff --name-only --diff-filter=ACMR "$rng" 2>/dev/null || git show --pretty= --name-only "$lsha")
+  files="$files$f"$'\n'
+done
+
+files=$(printf '%s' "$files" | sed '/^$/d' | sort -u)
+if [ -z "$files" ]; then echo "disclosure-gate: nothing new to disclose."; exit 0; fi
+
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+n=0
+while IFS= read -r f; do
+  [ -f "$ROOT/$f" ] || continue
+  mkdir -p "$tmp/$(dirname "$f")"; cp "$ROOT/$f" "$tmp/$f"; n=$((n+1))
+done <<< "$files"
+[ -f "$ROOT/.disclosure-allow" ] && cp "$ROOT/.disclosure-allow" "$tmp/.disclosure-allow"
+echo "disclosure-gate: scanning $n file(s) introduced by this push"
+set -o pipefail
+
+if ! "$GATE" "$tmp" 2>&1 | sed "s#$tmp/\?##g"; then
+  echo ""
+  echo "pre-push REFUSED by disclosure-gate (files listed above, paths relative to repo root)."
+  echo "Fix the hits, or add a justified regex to $ROOT/.disclosure-allow (a commit, reviewable)."
+  if [ "${DISCLOSURE_OVERRIDE:-0}" = "1" ]; then echo "DISCLOSURE_OVERRIDE=1 SET — allowing."; exit 0; fi
+  echo "Single-push override: DISCLOSURE_OVERRIDE=1 git push"
+  exit 1
+fi
+exit 0
