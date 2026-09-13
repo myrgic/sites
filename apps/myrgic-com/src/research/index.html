@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research / Myrgic Labs</title>
+<meta name="description" content="Research notes and papers from Myrgic Labs.">
+<link rel="canonical" href="https://myrgic.com/research/">
+<link rel="stylesheet" href="../colors_and_type.css">
+<script src="../eigen-form.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body);
+         overflow-wrap: break-word; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 96px; }
+  .crumb { font-family: var(--font-mono); font-size: 13px; color: var(--fg-4); margin: 0 0 36px; }
+  .crumb a { color: var(--fg-3); text-decoration: none; }
+  .crumb a:hover { color: var(--accent); }
+  .top { display: flex; align-items: center; gap: 18px; margin-bottom: 30px; }
+  .mark { width: 64px; height: 64px; flex: none; }
+  h1 { font-family: var(--font-display); font-size: clamp(30px, 5.4vw, 42px);
+       margin: 0; letter-spacing: -0.02em; }
+  .lede { font-size: 17.5px; line-height: 1.55; color: var(--fg-2); margin: 0 0 14px; }
+  h2 { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.12em;
+       text-transform: uppercase; color: var(--fg-4); margin: 54px 0 18px; font-weight: 500; }
+  .card { display: block; text-decoration: none; color: inherit;
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: var(--r-2); padding: 18px 20px; margin-bottom: 12px;
+          border-left: 3px solid var(--accent);
+          transition: border-color var(--dur-base) var(--ease),
+                      background var(--dur-base) var(--ease),
+                      transform var(--dur-fast) var(--ease); }
+  .card:hover { background: var(--bg-elevated); border-color: var(--border-light);
+                transform: translateX(2px); }
+  .card h3 { margin: 0 0 6px; font-size: 17px; font-family: var(--font-mono);
+             font-weight: 600; color: var(--fg); }
+  .card p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--fg-3); }
+  .meta { margin-top: 10px; font-size: 12px; font-family: var(--font-mono); color: var(--fg-4); }
+  .foot { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+          font-size: 13px; color: var(--fg-4); display: flex;
+          justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .foot a { color: var(--fg-3); text-decoration: none; }
+  .foot a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="crumb"><a href="/">myrgic</a> / research</p>
+  <div class="top">
+    <canvas class="mark" width="256" height="256" id="mark"></canvas>
+    <div><h1>Research</h1></div>
+  </div>
+  <p class="lede">Working notes and papers. Published here first, because publishing
+     publicly is the constraint that keeps the claims standable.</p>
+
+  <h2>Notes</h2>
+  <a class="card" href="/research/second-order-observability/">
+    <h3>Second-Order Observability</h3>
+    <p>A monitoring system watches your services — what watches the monitoring system?
+       Declared observability is optional while the observer is more reliable than the
+       referent, and mandatory once it isn't. AI agents cross that line by construction.</p>
+    <p class="meta">working note &middot; paper in progress</p>
+  </a>
+
+  <div class="foot">
+    <span>Myrgic Labs</span>
+    <a href="https://myrgic.com">myrgic.com</a>
+  </div>
+</main>
+<script>
+  var el = document.getElementById('mark');
+  if (el && window.createTrefoilMark) window.createTrefoilMark(el, {});
+</script>
+</body>
+</html>

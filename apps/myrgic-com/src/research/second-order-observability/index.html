@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second-Order Observability / Myrgic Labs</title>
+<meta name="description" content="Declared observability is optional when the observer is more reliable than the referent, and mandatory when it is not. Synthetic observers cross that line by construction.">
+<link rel="canonical" href="https://myrgic.com/research/second-order-observability/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Second-Order Observability">
+<meta property="og:description" content="A monitor that cannot report its own absence. Why declared observability becomes mandatory once the observer is an agent.">
+<meta property="og:url" content="https://myrgic.com/research/second-order-observability/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@freekyfrogy">
+
+<link rel="stylesheet" href="../../colors_and_type.css">
+<script src="../../eigen-form.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body);
+         overflow-wrap: break-word; }
+  /* Long-form reading: prose in the brand serif. Mono stays for code, labels, meta. */
+  .lede, p, li, .claim p, .note { font-family: var(--font-display);
+        font-variation-settings: 'opsz' 14; letter-spacing: 0.005em; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  .crumb { font-family: var(--font-mono); font-size: 13px; color: var(--fg-4);
+           margin: 0 0 36px; overflow-wrap: anywhere; }
+  .crumb a { color: var(--fg-3); text-decoration: none; }
+  .crumb a:hover { color: var(--accent); }
+
+  .top { display: flex; align-items: center; gap: 18px; margin-bottom: 30px; }
+  .mark { width: 64px; height: 64px; flex: none; }
+
+  h1 { font-family: var(--font-display); font-size: clamp(30px, 5.4vw, 42px);
+       margin: 0; letter-spacing: -0.02em; line-height: 1.1; }
+  .sub { color: var(--fg-3); font-family: var(--font-mono); font-size: 13px;
+         margin: 8px 0 0; }
+
+  .status { display: inline-block; font-family: var(--font-mono); font-size: 12px;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            border: 1px solid var(--border); border-radius: var(--r-1);
+            padding: 5px 10px; color: var(--fg-4); margin-bottom: 34px; }
+
+  .lede { font-size: clamp(18px, 2.4vw, 21px); line-height: 1.58; color: var(--fg-2);
+          margin: 0 0 16px; }
+  .lede strong { color: var(--fg); font-weight: 500; }
+
+  p { line-height: 1.72; color: var(--fg-2); margin: 0 0 18px; font-size: 17.5px; }
+  p strong { color: var(--fg); font-weight: 600; }
+
+  h2 { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.12em;
+       text-transform: uppercase; color: var(--fg-4); margin: 54px 0 18px;
+       font-weight: 500; }
+  h3 { font-family: var(--font-mono); font-size: 16px; color: var(--fg);
+       margin: 32px 0 10px; font-weight: 600; }
+
+  .claim { background: var(--bg-card); border: 1px solid var(--border);
+           border-left: 3px solid var(--accent); border-radius: var(--r-2);
+           padding: 20px 22px; margin: 0 0 28px; }
+  .claim p { margin: 0; font-size: 17px; line-height: 1.6; color: var(--fg); }
+
+  pre { background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: var(--r-2); padding: 16px 18px; overflow-x: auto;
+        font-family: var(--font-mono); font-size: 12px; line-height: 1.55;
+        color: var(--fg-2); margin: 0 0 10px; }
+  code { font-family: var(--font-mono); font-size: 0.92em; color: var(--fg); }
+  p code, li code { background: var(--bg-card); border: 1px solid var(--border);
+                    border-radius: var(--r-1); padding: 1px 5px;
+                    overflow-wrap: anywhere; }
+  .caption { font-size: 13px; color: var(--fg-4); margin: 0 0 26px;
+             font-family: var(--font-mono); line-height: 1.5; }
+
+  .hl { color: var(--accent); }
+
+  ul { color: var(--fg-2); line-height: 1.72; font-size: 17.5px; padding-left: 22px; }
+  li { margin-bottom: 9px; }
+
+  .note { border-left: 2px solid var(--border); padding: 2px 0 2px 18px;
+          margin: 0 0 20px; color: var(--fg-3); font-size: 15.5px; line-height: 1.6; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .chip { text-decoration: none; font-family: var(--font-mono); font-size: 13.5px;
+          color: var(--fg-2); border: 1px solid var(--border);
+          border-radius: var(--r-1); padding: 9px 14px;
+          transition: border-color var(--dur-base) var(--ease),
+                      color var(--dur-base) var(--ease); }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .foot { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+          font-size: 13px; color: var(--fg-4); display: flex;
+          justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .foot a { color: var(--fg-3); text-decoration: none; }
+  .foot a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 40px 18px 72px; }
+    .top { gap: 14px; }
+    .mark { width: 52px; height: 52px; }
+    h1 { font-size: 27px; }
+    pre { font-size: 10.5px; padding: 14px 14px; }
+    .claim { padding: 16px 16px; }
+    .lede, p, li { font-size: 16.5px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <p class="crumb"><a href="/">myrgic</a> / <a href="/research/">research</a> / second-order-observability</p>
+
+  <div class="top">
+    <canvas class="mark" width="256" height="256" id="mark"></canvas>
+    <div>
+      <h1>Second-Order Observability</h1>
+      <p class="sub">Chaz Dinkle &middot; Myrgic Labs</p>
+    </div>
+  </div>
+
+  <span class="status">Working note &middot; paper in progress</span>
+
+  <p class="lede">A monitoring system watches your services. <strong>What watches the
+     monitoring system?</strong> The usual answer is another monitoring system, and the
+     usual place that argument stops is one level up, on the grounds that the observer
+     is more reliable than the thing it observes.</p>
+
+  <p class="lede">That assumption is load-bearing, and AI agents break it.</p>
+
+  <h2>The claim</h2>
+
+  <div class="claim">
+    <p>Declared observability is optional when the observer is more reliable than the
+       referent, and mandatory when it is not. Synthetic observers — agents that observe
+       and act in the same loop — cross that line by construction.</p>
+  </div>
+
+  <p>Infrastructure already built most of this and did not particularly notice. A
+     Prometheus <code>ServiceMonitor</code> is a declared observation: a record stating
+     that something should be watched. Kubernetes has
+     <code>Ready=Unknown</code>. Nagios has <code>UNKNOWN</code>, held carefully distinct
+     from <code>CRITICAL</code> — a plugin that could not produce a result is not the
+     same as a plugin that produced a bad one.</p>
+
+  <p>So the mechanism is not new, and this note does not claim it is. What is missing is
+     the <strong>reflexive</strong> case: none of these patterns can express an observer
+     observing something that observes back.</p>
+
+  <h2>Where the existing pattern runs out</h2>
+
+  <p>Three gaps, each verified against primary sources rather than recollection.</p>
+
+  <h3>1. The observer is not in the declaration</h3>
+
+  <p>Nothing in the <code>ServiceMonitor</code> schema names the Prometheus that will
+     scrape it. The relationship is a two-way label join — the Prometheus resource
+     carries a <code>serviceMonitorSelector</code>, the ServiceMonitor carries labels —
+     computed at reconcile time across two objects that never reference each other.</p>
+
+  <p>"Who observes this?" is therefore not a lookup. It is a join across the cluster,
+     recomputed per query. And "is anything observing this at all?" has no cheap answer
+     at all.</p>
+
+  <h3>2. Nothing is silence, not zero</h3>
+
+  <p>A selector that matches nothing produces no series. Not <code>0</code> —
+     <em>nothing</em>. The <code>up</code> metric is <code>0</code> only for a target
+     that was scraped and failed; a target that was never discovered has no row to be
+     zero. PromQL ships <code>absent()</code> specifically to manufacture a value out of
+     that void, which is a clear signal the void is a problem.</p>
+
+  <div class="note">A monitor that was never wired up and a monitor reporting perfect
+     health produce identical output: no alerts.</div>
+
+  <h3>3. Self-observation cannot close</h3>
+
+  <p><code>kube-prometheus</code> ships a ServiceMonitor pointing Prometheus at itself.
+     It catches degradation. It cannot catch total failure — if the process is gone,
+     nothing remains to record that it is gone. The failure mode is silence, and silence
+     is what success looks like.</p>
+
+  <p>This is Thompson's trusting-trust problem in a monitoring stack: a self-hosting
+     system cannot certify itself by self-examination. Wheeler's answer to Thompson was
+     an independent, externally-rooted compilation path. The answer here has the same
+     shape.</p>
+
+  <h2>Why agents change the math</h2>
+
+  <p>Every one of those gaps was survivable because of one assumption: the observer is
+     more reliable than the referent. Prometheus fails far less often than what it
+     watches, so one unwatched level at the top is an acceptable rounding error.</p>
+
+  <p>An LLM agent is not that. It is <strong>unreliable, observing, and acting in the
+     same loop</strong> — and its self-report is narrative rather than trace. An agent
+     that reports having done something it did not do is producing a correct-looking
+     output with no consumer that could catch it. That is not a rounding error at the
+     top of the stack; it is the same defect the stack exists to detect, relocated into
+     the detector.</p>
+
+  <p>There is prior art for exactly this, from control theory. Feldbaum's dual control
+     (1960–61) showed that when a controller's actions both steer a process and generate
+     the information used to estimate it, estimation and control can no longer be
+     designed independently — the acting corrupts the observing. The classical separation
+     principle holds only while the observer does not disturb what it observes. An agent
+     in a loop violates that premise by definition.</p>
+
+  <h2>The minimal pattern that closes</h2>
+
+  <p>Make the observation itself a first-class record:</p>
+
+  <pre>{ "id": "obs-A-of-B", "referent": "B", "observer": "A", "pointer": "..." }</pre>
+  <p class="caption">observer is required at load time — a declared observable with no
+     observer is not a malformed record, it is not a record</p>
+
+  <p>Then the reflexive part: <strong>the minimum cycle length that can report its own
+     failure is two.</strong> Two processes that each observe the other survive the death
+     of either one. A process that observes itself cannot.</p>
+
+  <p>There is a running demonstrator — Python standard library only, falsifiable with
+     <code>kill -9</code>. Here is real output from it. Two processes, <code>A</code> and
+     <code>B</code>, observe each other; <code>C</code> observes only itself.</p>
+
+  <p>Kill <code>B</code>, and its partner reports it within the grace window:</p>
+
+  <pre>ID           REFERENT OBSERVER  STATUS        LAST_ATTEMPTED  NOTE
+obs-A-of-B   B        A         <span class="hl">unobserved</span>    0.5s ago   heartbeat 4.25s old (stale)</pre>
+  <p class="caption">the 2-cycle: A is alive, still checking, and says so</p>
+
+  <p>Now kill <code>C</code>, the self-observer, and wait twelve seconds:</p>
+
+  <pre>ID           REFERENT OBSERVER  STATUS        LAST_ATTEMPTED  NOTE
+obs-C-of-C   C        C         <span class="hl">healthy</span>       12.6s ago  self_report='ok', age 1.07s</pre>
+  <p class="caption">C has been dead for twelve seconds. Its own row still reads healthy.</p>
+
+  <p><code>C</code> is not reported as failed, or unknown, or stale. It is reported as
+     <strong>healthy</strong>, because the only process declared to check that row was
+     the process that died. The record is frozen mid-sentence and nothing in the system
+     is structurally capable of noticing.</p>
+
+  <p>A separate manual sweep does catch it — and it has to be manual, because it stands
+     in for what first-order observability actually falls back on: a human eventually
+     looking.</p>
+
+  <pre>obs-C-of-C   status=healthy   last_attempted 12.7s ago  <span class="hl">STALE (unreconciled for 12.7s)</span></pre>
+  <p class="caption">the audit sweep, run by hand, is the only consumer that notices</p>
+
+  <p>The difference between those two outcomes is cycle length 2 versus cycle length 1.
+     Not better code, not a longer timeout — a structural property of the observation
+     graph.</p>
+
+  <h2>What this does not claim</h2>
+
+  <ul>
+    <li><strong>Not novelty of declared observers</strong> or of <code>unobserved</code>
+        as a state. An adversarial prior-art review returned <em>anticipated</em> on the
+        mechanism, and that verdict stands. The contribution is the bridge and the
+        reflexive gap, not the primitive.</li>
+    <li><strong>Not a rate.</strong> Silent-failure instances are reported as a count.
+        The denominator — how often this happens across systems generally — is not
+        something this work measured, and naming that gap is part of the point.</li>
+    <li><strong>Not control.</strong> A synthetic observer is an observer-actuator, and
+        observability and controllability are duals. This note treats only the
+        observation half. The demonstrator shows that an observation can be trusted; it
+        shows nothing about whether an action was correctly effected.</li>
+    <li><strong>Not a product.</strong> The demonstrator is a reference implementation
+        with no network, no auth, and no persistence.</li>
+  </ul>
+
+  <h2>Status</h2>
+
+  <p>This is a working note, not the paper. The full paper is in progress; the thesis is
+     frozen and the demonstrator runs. This page will be superseded by the paper and a
+     tagged release when it lands.</p>
+
+  <div class="links">
+    <a class="chip" href="https://github.com/myrgic/research">Source repo</a>
+    <a class="chip" href="/chaz/">About the author</a>
+  </div>
+
+  <h2>References</h2>
+  <div class="links">
+    <a class="chip" href="https://prometheus-operator.dev/docs/getting-started/design/">Prometheus Operator</a>
+    <a class="chip" href="https://kubernetes.io/docs/reference/node/node-status/">Kubernetes node status</a>
+    <a class="chip" href="https://nagios-plugins.org/doc/guidelines.html">Nagios plugin guidelines</a>
+    <a class="chip" href="https://dwheeler.com/trusting-trust/">Wheeler, Diverse Double-Compiling</a>
+    <a class="chip" href="https://www.mathnet.ru/eng/at12149">Feldbaum, Dual Control</a>
+  </div>
+
+  <div class="foot">
+    <span>Myrgic Labs</span>
+    <a href="https://myrgic.com">myrgic.com</a>
+  </div>
+
+</main>
+<script>
+  var el = document.getElementById('mark');
+  if (el && window.createTrefoilMark) window.createTrefoilMark(el, {});
+</script>
+</body>
+</html>
