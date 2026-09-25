@@ -8,3 +8,83 @@ on:
 jobs:
   public-release-gate:
     uses: myrgic/.github/.github/workflows/public-release-gate.yml@main
+
+  # A merge to main previously published nothing: nothing in this repo's CI
+  # pushed a built app to its Pages target repo (e.g. myrgic/myrgic.github.io).
+  # Publishing only happened when a separate, out-of-repo local process was
+  # manually run against this workspace. This job makes "merged to main" and
+  # "published" the same event again: it builds every app and pushes its
+  # dist/ straight to the deploy target declared in that app's site.yaml, on
+  # every push to main once the release gate passes.
+  #
+  # It writes .artifact-sha as a length-prefixed sha256 over the sorted
+  # (path, content) pairs of the artifact (see .github/scripts/artifact_hash.py
+  # for the exact algorithm), so any other process that recomputes the same
+  # hash over the same artifact agrees with what CI just shipped instead of
+  # treating it as unrecognized content.
+  #
+  # Requires a repo secret PAGES_DEPLOY_TOKEN: a token with push access to each
+  # deploy target repo (myrgic/myrgic.github.io, myrgic/myrgic.ai,
+  # myrgic/myrgic.dev, myrgic/myrgic.net, myrgic/myrgic.org). The default
+  # GITHUB_TOKEN cannot push across repos. Until that secret exists this job
+  # fails loudly (see the "PAGES_DEPLOY_TOKEN is not set" step) rather than
+  # silently no-op deploying.
+  deploy:
+    needs: public-release-gate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [myrgic-ai, myrgic-com, myrgic-dev, myrgic-net, myrgic-org]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Read site.yaml
+        id: cfg
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import yaml
+          d = yaml.safe_load(open("apps/${{ matrix.app }}/site.yaml"))
+          spec = d["spec"]
+          print(f"repo={spec['deploy']['target']['repo']}")
+          print(f"dist={spec['build']['dist']}")
+          print(f"domain={spec['domain']}")
+          PY
+
+      - name: Build
+        working-directory: apps/${{ matrix.app }}
+        run: ./build.sh
+
+      - name: Compute artifact hash
+        id: hash
+        run: python3 .github/scripts/artifact_hash.py "apps/${{ matrix.app }}/${{ steps.cfg.outputs.dist }}" >> "$GITHUB_OUTPUT"
+
+      - name: Push to deploy target
+        env:
+          DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          REPO: ${{ steps.cfg.outputs.repo }}
+          DOMAIN: ${{ steps.cfg.outputs.domain }}
+          ARTIFACT_SHA: ${{ steps.hash.outputs.sha }}
+          DIST: apps/${{ matrix.app }}/${{ steps.cfg.outputs.dist }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_TOKEN}" ]; then
+            echo "::error::PAGES_DEPLOY_TOKEN secret is not set — cannot push ${{ matrix.app }} to ${REPO}. See the deploy job comment in .github/workflows/ci.yml." >&2
+            exit 1
+          fi
+          TMP="$(mktemp -d)"
+          cp -r "${DIST}/." "${TMP}/"
+          printf '%s' "${ARTIFACT_SHA}" > "${TMP}/.artifact-sha"
+          printf '%s' "${DOMAIN}" > "${TMP}/CNAME"
+          cd "${TMP}"
+          git init -q
+          git -c user.email="ci@myrgic.io" -c user.name="myrgic-sites-ci" add .
+          git -c user.email="ci@myrgic.io" -c user.name="myrgic-sites-ci" \
+            commit -q -m "deploy: ${DOMAIN} @ ${GITHUB_SHA:0:12}"
+          git remote add origin "https://x-access-token:${DEPLOY_TOKEN}@github.com/${REPO}.git"
+          git push --force origin HEAD:main
