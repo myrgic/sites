@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chaz Dinkle: working systems, and where they break</title>
-<meta name="description" content="Six working projects by Chaz Dinkle, each with a demo you can open and a section on where it breaks: an agent interface with parallel work threads, a Go reconciler for AI workstations, a browser DAW an agent can drive, audited simulations, a replayable simulation engine, and a strip of small tools.">
+<meta name="description" content="Six working projects by Chaz Dinkle, each with a demo you can open and a section on where it breaks: an agent interface with parallel work threads, a Go reconciler for AI workstations, a browser DAW an agent can drive, audited simulations, a replayable simulation engine with a Pok&eacute;mon engine built on it, and a strip of small tools.">
 <link rel="canonical" href="https://myrgic.com/chaz/ai-hacker-portfolio/">
 
 <meta property="og:type" content="website">
@@ -158,7 +158,7 @@
     <li><a href="#audit" style="--acc: var(--brand-research)"><span class="n">04</span><span class="t">I audit my own demos</span>
         <span class="d">Four of my own claims falsified in one day, and a conservation bug found by measuring the total.</span></a></li>
     <li><a href="#fieldengine"><span class="n">05</span><span class="t">FieldEngine and MonEngine</span>
-        <span class="d">A simulation engine whose runs are hash-chained and replayable, tested with predictions written first. Two of six missed.</span></a></li>
+        <span class="d">A game-neutral simulation engine whose runs are hash-chained and replayable, and the Pok&eacute;mon engine built on top of it. Predictions written first; the misses stay in.</span></a></li>
     <li><a href="#also"><span class="n">06</span><span class="t">Also built</span>
         <span class="d">Six small live tools. Side projects are how I learn.</span></a></li>
   </ol>
@@ -348,21 +348,40 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
   <!-- 05 FIELDENGINE -->
   <article class="post" id="fieldengine" aria-labelledby="fe-h">
     <p class="kicker">05 &middot; determinism, evaluation, tooling</p>
-    <h2 id="fe-h">A simulation engine where every run is a ledger</h2>
+    <h2 id="fe-h">A game-neutral engine, and a Pok&eacute;mon engine on top of it</h2>
     <p class="tag">FieldEngine and MonEngine &middot; TypeScript</p>
 
     <h3>The rough idea</h3>
-    <p>If a simulation is going to back claims, a run has to be replayable and tamper-evident. I also wanted a game player that could load versioned content without the engine knowing anything about the game.</p>
+    <p>If a simulation is going to back claims, a run has to be replayable and tamper-evident. That is FieldEngine: the part that knows nothing about any game.</p>
+    <p>A neutral engine is easy to call neutral. A real, content-heavy game is the test of whether it carries weight. That is MonEngine: an engine for Pok&eacute;mon-style games, built to sit on FieldEngine, so the engine&rsquo;s claims get tested against something with real content and real edge cases. That is the plan; the "where it breaks" section says how far it has got.</p>
 
     <h3>What I built</h3>
     <ul>
-      <li><strong>FieldEngine.</strong> A game-neutral engine. A shared medium of decaying, diffusing field layers; uniform agents that perceive through a window and act by writing to the medium; and a run recorded as an append-only hash chain, with a genesis that is the digest of what the run is based on.
+      <li><strong>FieldEngine.</strong> A shared medium of decaying, diffusing field layers; uniform agents that perceive through a window and act by writing to the medium; and a run recorded as an append-only hash chain, with a genesis that is the digest of what the run is based on.
           Replaying the same base, seed and actions reproduces every hash. Content ships as versioned packs. A CI guard fails the build if game-specific names or binary assets appear in the core.</li>
-      <li><strong>MonEngine.</strong> An installable web player built on it. It contains no game data: you load a pack you built yourself, and your saves stay on your device.</li>
-      <li><strong>Experiment E-001.</strong> The first test of the engine. Predictions were committed and pushed before the first run.</li>
+      <li><strong>MonEngine.</strong> The Pok&eacute;mon engine. It reads the original games' data from public community disassemblies (no ROM needed; HeartGold/SoulSilver today), normalises it into versioned packs (a zip container with schemas), and runs a game from a pack headless or in the browser.
+          Scripts are stored as data on a fixed 60&nbsp;Hz tick clock; a save is a snapshot plus an input log. No game data is committed anywhere.</li>
+      <li><strong>The split.</strong> FieldEngine is the neutral layer: medium, agents, deterministic stepping, ledger, pack primitives. MonEngine is the game layer over it: importers, script execution, game profiles. The rule is that nothing game-specific leaks down into FieldEngine, and a CI guard there enforces it.</li>
+      <li><strong>Experiment E-001.</strong> The first test of FieldEngine. Predictions were committed and pushed before the first run.</li>
     </ul>
 
-    <h3>Result</h3>
+    <h3>What MonEngine has carried so far</h3>
+    <p>Every MonEngine spec is sealed with its predictions before the code is written, then measured. The misses stay in the table.</p>
+    <div class="tablewrap">
+      <table>
+        <caption>MonEngine: sealed specs and what was measured</caption>
+        <thead><tr><th scope="col">Spec</th><th scope="col">Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Import the game&rsquo;s data into a pack</td><td class="miss">10 of 11 hit. Miss: 108 distinct native script commands against a predicted 40 or fewer.</td></tr>
+          <tr><td>Pack format and container</td><td class="miss">8 of 9 hit. Miss: 26.8% against a predicted under 25% on one size measure. An independent judge found 4 defects; all fixed.</td></tr>
+          <tr><td>An external battle simulator behind a seam</td><td>All 8 hit. Stats 24 of 24 and damage 19 of 19 equal the original game&rsquo;s code; all 42 intro battles end, winners agree on 40.</td></tr>
+          <tr><td>The public player</td><td class="miss">Hit except one: the JavaScript came in under the predicted size. 0 of 30 sampled game strings in the build. Installable, works offline.</td></tr>
+          <tr><td>The Johto intro, end to end</td><td>First evaluation said it was not done by its own definition. Tag v0.6.0 closed it: a recorded playthrough of 42 checks, 0 failures, with all three starters.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>FieldEngine result</h3>
     <div class="tablewrap">
       <table>
         <caption>E-001: 256&times;256, 8,000 agents, 1,000 ticks, seeds 1 to 5</caption>
@@ -384,23 +403,29 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
       <figcaption>Left: traces on, the agents collapse into a few hubs. Right: traces off, straight rays crisscross the grid. Same agents and rules, one switch.</figcaption>
     </figure>
 
+
     <h3>Demo</h3>
     <div class="demo">
-      <p>The rule FieldEngine's first scenario ports runs live in the gallery. The player is public too, but it opens empty without a pack, and I am not shipping a game pack on this page.</p>
+      <p>The rule FieldEngine&rsquo;s first scenario ports runs live in the gallery.</p>
+      <p>The MonEngine player is public and installable, but it opens empty. It loads a pack that you build from your own copy of the game, and your pack and saves stay on your device. I am not putting a pack on this page, because the contents would be Nintendo&rsquo;s. There are no game screenshots on this page for the same reason. I am happy to run it live.</p>
       <div class="row">
         <a class="chip primary" href="https://myrgic.com/eigen-form/apps/physarum/">Run the physarum rule</a>
-        <a class="chip" href="https://myrgic.com/monengine/">MonEngine player (needs a pack)</a>
+        <a class="chip" href="https://myrgic.com/monengine/">MonEngine player (needs your own pack)</a>
         <a class="chip" href="https://github.com/myrgic/monengine">Player source</a>
       </div>
-      <p class="note">The FieldEngine core repository is private for now. This write-up is of work I am happy to walk through.</p>
+      <p class="note">The FieldEngine and MonEngine core repositories are private for now. This write-up is of work I am happy to walk through. Pok&eacute;mon is a trademark of Nintendo, Game Freak and Creatures; this project is unaffiliated.</p>
     </div>
 
     <h3>Where it breaks</h3>
     <div class="breaks">
       <ul>
-        <li>The deposit run is a collapse, not a network: 8,000 agents land on 29 of 1,024 bins. At this density the trail values sit pinned at their clamp.</li>
+        <li>The dependency is not wired yet. FieldEngine&rsquo;s first files were lifted out of a tagged MonEngine release, and the two co-evolve by pinned releases. MonEngine does not yet import FieldEngine as a package. The roadmap marks the split as a direction, not a finished boundary.</li>
+        <li>Only one game family runs: Gen&nbsp;4 (HeartGold) and only the Johto intro region. Red, Crystal and Emerald importers are planned. So are the other games on the roadmap. None of that is proven.</li>
+        <li>At my last evaluation the battle screen was still placeholder art, and the spec work on a core protocol that agents and other front ends would share is not written yet.</li>
+        <li>The deposit run in E-001 is a collapse, not a network: 8,000 agents land on 29 of 1,024 bins. At this density the trail values sit pinned at their clamp.</li>
         <li>FieldScript, the rule language, is planned and not built. Agents run hand-written TypeScript policies today.</li>
         <li>The hash chain proves a run was not altered. It says nothing about whether the simulation was a good model of anything.</li>
+        <li>An independent review found a browser stall in about one in two runs. I could not reproduce it in 69 later runs and added logging, which is not the same as having fixed it.</li>
       </ul>
     </div>
   </article>
