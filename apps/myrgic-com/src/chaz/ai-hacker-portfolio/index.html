@@ -244,7 +244,7 @@
 sleep 45 &amp;&amp; lms ps          # loaded again, same context length
 curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
       <figure data-src="media/cogos-self-heal.mp4" data-poster="media/cogos-self-heal.png" hidden>
-        <figcaption>Scripted self-heal run: the model process is killed, the kernel detects it and loads it again.</figcaption>
+        <figcaption>A real kernel on a spare port, a scratch workspace and one tiny model. I unload the model by hand, wait, and the kernel loads it back. Nothing is mocked; the idle waits are squeezed and labelled on screen.</figcaption>
       </figure>
       <div class="row">
         <a class="chip" href="https://github.com/myrgic/cogos">Source (MIT)</a>
