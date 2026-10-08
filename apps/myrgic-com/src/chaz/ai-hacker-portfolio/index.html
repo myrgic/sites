@@ -161,6 +161,8 @@
         <span class="d">A game-neutral simulation engine whose runs are hash-chained and replayable, and the Pok&eacute;mon engine built on top of it. Predictions written first; the misses stay in.</span></a></li>
     <li><a href="#also"><span class="n">06</span><span class="t">Also built</span>
         <span class="d">Six small live tools. Side projects are how I learn.</span></a></li>
+    <li><a href="#outside" style="--acc: var(--brand-research)"><span class="n">07</span><span class="t">What I chase outside work</span>
+        <span class="d">A theory of self-reference with its refuted parts cut out, THESEUS, a book, music and games.</span></a></li>
   </ol>
 
   <!-- 01 STAGE -->
@@ -443,6 +445,57 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
       <li><a href="https://chazmaniandinkle.github.io/screen-probe/"><b>Screen probe</b><span>Reports the viewport, fold and safe-area facts of whatever device opens it.</span></a></li>
       <li><a href="https://chazmaniandinkle.github.io/statusline-lab/"><b>Statusline Lab</b><span>A designer for Claude Code status lines.</span></a></li>
     </ul>
+  </article>
+
+  <!-- 07 OUTSIDE WORK -->
+  <article class="post" id="outside" style="--acc: var(--brand-research)" aria-labelledby="outside-h">
+    <p class="kicker">07 &middot; what the projects grow out of</p>
+    <h2 id="outside-h">What I chase outside work</h2>
+    <p class="tag">The projects above are where the questions below get tested. Same rule for all of them: publish what survives, say what didn&rsquo;t.</p>
+
+    <h3>A theory of self-reference, scoped honestly</h3>
+    <p>I keep coming back to one question: when does a system&rsquo;s description of itself hold together? <strong>Self-Referential Closure</strong>
+       is a small model of that: a signal, an observer&rsquo;s description of it, a coupling and a delay. Inside the model a few results are exact.
+       The description&rsquo;s correlation with the signal crosses 0.5 at a delay of ln&nbsp;2. At symmetric coupling the signal carries six times the
+       description&rsquo;s variance, and that ratio barely moves when the noise distribution changes.</p>
+    <p>The part I&rsquo;m proudest of is the scope note. The model sits inside a wider framework of mine, and my own review refuted a piece of it that
+       several later results depended on. The public write-up keeps only what doesn&rsquo;t depend on that piece, and makes no claim about physics.
+       That ln&nbsp;2 also turns up in Landauer&rsquo;s bound and Eigen&rsquo;s error threshold is labelled a conjecture, not a result.</p>
+    <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px">
+      <a class="chip" href="https://github.com/myrgic/research/tree/main/src">The SRC write-up</a>
+      <a class="chip" href="https://myrgic.com/research/second-order-observability/">Second-Order Observability (working note)</a>
+    </div>
+
+    <h3>THESEUS: keeping an agent itself while every part is swapped</h3>
+    <p>The Ship of Theseus, as engineering. <strong>THESEUS</strong> stands for <em>Transpositional Harness Enacting Stabilized Eigenforms Under
+       Substitution</em>: a backronym I fitted to the myth after the idea was already standing. The idea is that the agent I work with isn&rsquo;t
+       the model, the chat app or the session. Those get swapped all the time. It&rsquo;s the loop: a session reads its own state from a kernel,
+       works, and writes it back, so the next session, on whatever model or harness, picks up as the same collaborator.</p>
+    <p>It ties the projects together. CogOS is the kernel that holds the state. The stage is one of the swappable surfaces. The work on this page
+       was split between two different models, handing tasks to each other through the same kernel, and that hand-off is the
+       substitution the name is about.
+       Where it breaks: the loop only holds if a new session actually reads the state back rather than starting fresh, and that is still
+       something I have to check, not something I can assume.</p>
+
+    <h3>A book</h3>
+    <p><strong>Thinking Through Distinction</strong> takes one object, the eigenform (a fixed point), and re-derives it from a different
+       established discipline in each chapter, so the book is the definition rather than an argument for one. It&rsquo;s a draft, and the
+       manuscript is private for now. The build behind it is not: the chapters are fragments assembled into one self-contained HTML edition,
+       and reviewers&rsquo; comments are kept in a ledger that the build reads back.</p>
+    <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px">
+      <a class="chip" href="https://github.com/myrgic/thinking-through-distinction">Book repo (web editions land here)</a>
+    </div>
+
+    <h3>Music</h3>
+    <p>I write lyrics and produce songs with AI models, and I treat a render the way I treat a demo: check it. Songs are separated into stems,
+       the sung words are transcribed back and compared with the lyric I wrote, and key and tempo are measured. When a model can&rsquo;t do
+       something (overlapping vocal lines, or narration it will sing instead of speak), the fix is arrangement and splicing in post, not
+       another prompt. Oscine, the browser DAW above, came out of the same interest.</p>
+
+    <h3>Games</h3>
+    <p>Games are where I test engines against something with real content and real players. MonEngine (above) is a Pok&eacute;mon engine on
+       my own simulation engine. The small games in &ldquo;Also built&rdquo; are mostly about one mechanic or one odd space: air traffic
+       control by touch, Asteroids on a Klein bottle, a voxel god game.</p>
   </article>
 
   <footer class="foot">
