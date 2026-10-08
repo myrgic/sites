@@ -152,7 +152,7 @@
     <li><a href="#stage" style="--acc: var(--brand-mod3)"><span class="n">01</span><span class="t">Stage and Mod&sup3;</span>
         <span class="d">An agent you can see, hear and hand work to. Model routing, parallel work threads, human approvals.</span></a></li>
     <li><a href="#cogos" style="--acc: var(--brand-cogos)"><span class="n">02</span><span class="t">CogOS</span>
-        <span class="d">Declare an AI workstation's state in files; a Go daemon keeps it true and says plainly when it can't.</span></a></li>
+        <span class="d">Declare an AI workstation's state in files; a Go daemon keeps it true and tells you when it can't.</span></a></li>
     <li><a href="#oscine"><span class="n">03</span><span class="t">Oscine</span>
         <span class="d">A browser DAW an agent can drive. Live, no build step, one command catalog behind five front ends.</span></a></li>
     <li><a href="#audit" style="--acc: var(--brand-research)"><span class="n">04</span><span class="t">I audit my own demos</span>
@@ -260,7 +260,7 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
         <li><strong>Failure is bounded.</strong> Consecutive failures back off exponentially with jitter, then after 12 in a row the daemon stops acting on that provider but keeps observing it. Quarantine lifts when someone changes what was failing.</li>
         <li><strong>No leases yet.</strong> An experiment that needs the GPU has to flip the declaration off and restart the kernel; a plain unload is undone within a cycle.</li>
         <li><strong>A known reporting bug:</strong> the aggregate model-state entry says <em>Degraded</em> while the per-backend entries are healthy. And two reconcilers regularly exceed their cycle-time budget.</li>
-        <li>One more worth stating: self-update verifies a SHA-256, not a signature. Production would need signed releases and an auth story for remote backends.</li>
+        <li>Also: self-update verifies a SHA-256, not a signature. Production would need signed releases and an auth story for remote backends.</li>
       </ul>
     </div>
   </article>
@@ -325,7 +325,7 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
           and when I controlled for median container size the effect disappeared (t = +0.53, down from &minus;6.35). The separation was real and was fully explained by a variable I had not controlled.
           (<a href="https://github.com/myrgic/eigen-form/commit/3d4bbb3c563d56bbc03a8744bd09c4d068a30c87">commit</a>)</li>
     </ul>
-    <p>The commit message for the last one says it plainly: four claims proposed that day, four falsified by my own tests. The instrument was sound and the hypotheses were not.</p>
+    <p>The commit message for the last one sums it up: four claims proposed that day, four falsified by my own tests. The instrument was sound and the hypotheses were not.</p>
 
     <h3>Demo</h3>
     <div class="demo">
@@ -355,7 +355,7 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
 
     <h3>The rough idea</h3>
     <p>If a simulation is going to back claims, a run has to be replayable and tamper-evident. That is FieldEngine: the part that knows nothing about any game.</p>
-    <p>A neutral engine is easy to call neutral. A real, content-heavy game is the test of whether it carries weight. That is MonEngine: an engine for Pok&eacute;mon-style games, built to sit on FieldEngine, so the engine&rsquo;s claims get tested against something with real content and real edge cases. That is the plan; the "where it breaks" section says how far it has got.</p>
+    <p>Calling an engine game-neutral proves nothing until a big, content-heavy game runs on it. MonEngine is that game: a Pok&eacute;mon engine built to sit on FieldEngine, so the engine gets tested against real content and real edge cases. That is the plan; the "where it breaks" section says how far it has got.</p>
 
     <h3>What I built</h3>
     <ul>
@@ -409,13 +409,13 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
     <h3>Demo</h3>
     <div class="demo">
       <p>The rule FieldEngine&rsquo;s first scenario ports runs live in the gallery.</p>
-      <p>The MonEngine player is public and installable, but it opens empty. It loads a pack that you build from your own copy of the game, and your pack and saves stay on your device. I am not putting a pack on this page, because the contents would be Nintendo&rsquo;s. There are no game screenshots on this page for the same reason. I am happy to run it live.</p>
+      <p>The MonEngine player is public and installable, but it opens empty. It loads a pack that you build from your own copy of the game, and your pack and saves stay on your device. I am not putting a pack on this page, because the contents would be Nintendo&rsquo;s. There are no game screenshots on this page for the same reason. Ask me for a live run.</p>
       <div class="row">
         <a class="chip primary" href="https://myrgic.com/eigen-form/apps/physarum/">Run the physarum rule</a>
         <a class="chip" href="https://myrgic.com/monengine/">MonEngine player (needs your own pack)</a>
         <a class="chip" href="https://github.com/myrgic/monengine">Player source</a>
       </div>
-      <p class="note">The FieldEngine and MonEngine core repositories are private for now. This write-up is of work I am happy to walk through. Pok&eacute;mon is a trademark of Nintendo, Game Freak and Creatures; this project is unaffiliated.</p>
+      <p class="note">The FieldEngine and MonEngine core repositories are private for now. I can walk through any of it. Pok&eacute;mon is a trademark of Nintendo, Game Freak and Creatures; this project is unaffiliated.</p>
     </div>
 
     <h3>Where it breaks</h3>
@@ -453,12 +453,12 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
     <h2 id="outside-h">What I chase outside work</h2>
     <p class="tag">The projects above are where the questions below get tested. Same rule for all of them: publish what survives, say what didn&rsquo;t.</p>
 
-    <h3>A theory of self-reference, scoped honestly</h3>
+    <h3>A theory of self-reference, and where it stops</h3>
     <p>I keep coming back to one question: when does a system&rsquo;s description of itself hold together? <strong>Self-Referential Closure</strong>
        is a small model of that: a signal, an observer&rsquo;s description of it, a coupling and a delay. Inside the model a few results are exact.
        The description&rsquo;s correlation with the signal crosses 0.5 at a delay of ln&nbsp;2. At symmetric coupling the signal carries six times the
        description&rsquo;s variance, and that ratio barely moves when the noise distribution changes.</p>
-    <p>The part I&rsquo;m proudest of is the scope note. The model sits inside a wider framework of mine, and my own review refuted a piece of it that
+    <p>The scope note matters most. The model sits inside a wider framework of mine, and my own review refuted a piece of it that
        several later results depended on. The public write-up keeps only what doesn&rsquo;t depend on that piece, and makes no claim about physics.
        That ln&nbsp;2 also turns up in Landauer&rsquo;s bound and Eigen&rsquo;s error threshold is labelled a conjecture, not a result.</p>
     <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px">
@@ -493,7 +493,7 @@ curl -s localhost:6931/v1/reconcile/convergence | jq '.providers[]'</code></pre>
        another prompt. Oscine, the browser DAW above, came out of the same interest.</p>
 
     <h3>Games</h3>
-    <p>Games are where I test engines against something with real content and real players. MonEngine (above) is a Pok&eacute;mon engine on
+    <p>Games are where I test engines against something with real content. MonEngine (above) is a Pok&eacute;mon engine on
        my own simulation engine. The small games in &ldquo;Also built&rdquo; are mostly about one mechanic or one odd space: air traffic
        control by touch, Asteroids on a Klein bottle, a voxel god game.</p>
   </article>
